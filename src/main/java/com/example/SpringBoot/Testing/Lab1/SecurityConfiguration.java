@@ -11,14 +11,19 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration{
+    Logger logger = LoggerFactory.getLogger(BitCoinService.class);
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        logger.trace("Entering SecurityConfiguration.filterChain");
+
         http.authorizeRequests()
                 .antMatchers()
                 .authenticated()
@@ -32,11 +37,16 @@ public class SecurityConfiguration{
                 .authenticated()
                 .and()
                 .oauth2Login();
+
+        logger.trace("Leaving SecurityConfiguration.filterChain");
+
         return http.build();
     }
 
     @Bean
     public UserDetailsService userDetailsService() {
+        logger.trace("Entering SecurityConfiguration.userDetailsService");
+
         InMemoryUserDetailsManager userDetailService = new InMemoryUserDetailsManager();
 
         String username = "paxton";
@@ -47,12 +57,16 @@ public class SecurityConfiguration{
                 .build();
 
         userDetailService.createUser(thisUser);
+        logger.trace("Leaving SecurityConfiguration.userDetailsService");
 
         return userDetailService;
     }
 
     @Bean
     PasswordEncoder passwordEncoder() {
+        logger.trace("Entering SecurityConfiguration.passwordEncoder");
+        logger.trace("Leaving SecurityConfiguration.passwordEncoder");
+
         return new BCryptPasswordEncoder();
     }
 
